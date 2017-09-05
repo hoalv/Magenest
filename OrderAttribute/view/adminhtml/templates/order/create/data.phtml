@@ -1,0 +1,260 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<div class="page-create-order">
+    <script>
+        require(["Magento_Sales/order/create/form"], function () {
+            order.setCurrencySymbol('<?php /* @escapeNotVerified */ echo $block->getCurrencySymbol($block->getCurrentCurrencyCode()) ?>')
+        });
+    </script>
+    <div class="order-details<?php if ($block->getCustomerId()): ?> order-details-existing-customer<?php endif; ?>">
+
+        <div id="order-additional_area" style="display: none" class="admin__page-section order-additional-area">
+            <?php echo $block->getChildHtml('additional_area') ?>
+        </div>
+
+        <div id="order-search" style="display: none" class="admin__page-section order-search-items">
+            <?php echo $block->getChildHtml('search') ?>
+        </div>
+
+        <section id="order-items" class="admin__page-section order-items" data-mage-init='{"loader": {}}'>
+            <?php echo $block->getChildHtml('items') ?>
+        </section>
+
+        <div id="order-errors" class="order-errors"><?php echo $block->getChildHtml('errors') ?></div>
+
+        <section id="order-form_account" class="admin__page-section order-account-information">
+            <?php echo $block->getChildHtml('form_account') ?>
+        </section>
+
+        <!--        custom code for additional attribute-->
+        <!--        <style>-->
+        <!--            #attribute-field {-->
+        <!--                margin-bottom: 25px;-->
+        <!--            }-->
+        <!--        </style>-->
+        <section class="admin__page-section order-attribute">
+            <div class="admin__page-section-title">
+                <span class="title"><?php echo __('Additional Attributes'); ?></span>
+            </div>
+            <div class="admin__page-section-content ">
+                <?php
+                if (isset($_SESSION['adminhtml_quote']['order_id'])) {
+                    $orderId = $_SESSION['adminhtml_quote']['order_id'];
+                } else {
+                    $orderId = -1;
+                }
+
+                $blockObj = $block->getLayout()->createBlock('Magenest\OrderAttribute\Block\Adminhtml\Order\Create\Custom');
+                $_data = $blockObj->getOrderAttribute();
+                $countryName = $blockObj->getCountryNameByIp();
+                $blockOption = $block->getLayout()->createBlock('Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tab\Option');
+
+                foreach ($_data as $data) {
+                    if(($data->getCountryId()==null || $countryName == $blockObj->getCountrynameByCode($data->getCountryId()) )
+                        && $data->getIsVisibleOnBack()==1) {
+                        $typeInput = $data->getFrontendInput();
+                        $attributeId = $data->getAttributeId();
+                        $_array = $blockOption->getOptionArrayById($attributeId);
+                        if ($orderId != -1) {
+                            $valueAttribute = $blockObj->getOrderAttributeValue($orderId, $data->getAttributeId());
+                        } else {
+                            $valueAttribute = '';
+                        }
+
+                        ?>
+                        <div class="admin__field" id="attribute-field" style="margin-bottom: 25px;">
+                            <!--        <fieldset class="admin__fieldset">-->
+                            <label class="admin__field-label" for=""><span><?php /* @escapeNotVerified */
+                                    echo $data->getFrontendLabel(); ?></span></label>
+                            <?php
+                            if ($typeInput == 'text') {
+                                ?>
+                                <input type="text" name="addition[custom][text_<?php echo $attributeId; ?>]"
+                                       id="addition[custom][text_<?php echo $attributeId; ?>]"
+                                       class="admin__control-text" value="<?php echo  $valueAttribute!=''?$valueAttribute:'';?>" size="50"><br>
+                                <?php
+                            } else if ($typeInput == 'textarea') {
+                                ?>
+                                <textarea name="addition[custom][textarea_<?php echo $attributeId; ?>]"
+                                          id="addition[custom][textarea_<?php echo $attributeId; ?>]"
+                                          rows="4" cols="15"
+                                          value="<?php echo  $valueAttribute!=''?$valueAttribute:'';?><br>
+                                <?php
+                            } else if ($typeInput == 'date') {
+                                ?>
+                                <input type="text" class="datepicker"
+                                       id="addition[custom][date_<?php echo $attributeId; ?>]"
+                                       name="addition[custom][date_<?php echo $attributeId; ?>]"
+                                       value="<?php echo  $valueAttribute!=''?$valueAttribute:'';?>"><br/>
+                                <?php
+                            } else if ($typeInput == 'multiselect') {
+                                 $values =$valueAttribute!=''?unserialize($valueAttribute):'';
+                                ?>
+                                <select class="admin__control-multiselect"
+                                        name="addition[option][multiselect_<?php echo $attributeId; ?>][]"
+                                        multiple="multiple">
+                                    <?php
+                                    $counter = 0;
+                                    if ($_array != '') :?>
+                                        <?php foreach ($_array as $array) { ?>
+                                            <option id="custom[select_<?php echo $attributeId; ?>]"
+                                                    name="custom[select_<?php echo $attributeId; ?>]" value="<?php echo  $counter; ?>"
+                                                    <?php
+                                                        if($values !='' && in_array($counter, $values)){
+                                                    ?>
+                                                    selected="selected"
+                                                    <?php
+                                                        }
+                                                    ?>
+                                                    >
+                                                <?php echo $array['title']; ?>
+                                            </option>
+                                            <?php $counter++;
+                                        } ?>
+                                    <?php endif; ?>
+                                </select><br>
+                                <?php
+                            } else if ($typeInput == 'select') {
+                                $values =$valueAttribute!=''?unserialize($valueAttribute):'';
+                                ?>
+                                <select class="admin__control-select"
+                                        name="addition[option][select_<?php echo $attributeId; ?>][]">
+                                    <?php
+                                    $counter = 0;
+                                    if ($_array != '') :?>
+                                    <?php foreach ($_array as $array) { ?>
+                                    <option id="custom[select_<?php echo $attributeId; ?>]"
+                                            name="custom[select_<?php echo $attributeId; ?>]" value="<?php echo $counter; ?>"
+                                            <?php
+                                               if( $values!='' && in_array($counter, $values)){
+                                            ?>
+                                                  selected="selected"
+                                            <?php
+                                               }
+                                            ?>
+                                             >
+                                        <?php echo $array['title']; ?>
+                                    </option>
+                                            <?php $counter++;
+                                        } ?>
+                                    <?php endif; ?>
+                                </select><br>
+                                <?php
+                            }
+                            ?>
+                        </div>
+
+                        <?php
+                    }
+                }
+                ?>
+            </div>
+        </section>
+
+        <script>
+            require([
+                "jquery",
+                "mage/calendar"
+            ], function ($) {
+                $(".datepicker").calendar({
+                    changeYear: true,
+                    changeMonth: true,
+                    yearRange: "1970:2050",
+                    buttonText: "Select Date",
+                });
+            });
+        </script>
+        <!--        /custom code-->
+        <section id="order-addresses" class="admin__page-section order-addresses">
+            <div class="admin__page-section-title">
+                <span class="title"><?php /* @escapeNotVerified */
+                    echo __('Address Information') ?></span>
+            </div>
+            <div class="admin__page-section-content">
+                <div id="order-billing_address" class="admin__page-section-item order-billing-address">
+                    <?php echo $block->getChildHtml('billing_address') ?>
+                </div>
+                <div id="order-shipping_address" class="admin__page-section-item order-shipping-address">
+                    <?php echo $block->getChildHtml('shipping_address') ?>
+                </div>
+            </div>
+        </section>
+
+        <section id="order-methods" class="admin__page-section order-methods">
+            <div class="admin__page-section-title">
+                <span class="title"><?php /* @escapeNotVerified */
+                    echo __('Payment &amp; Shipping Information') ?></span>
+            </div>
+            <div class="admin__page-section-content">
+                <div id="order-billing_method" class="admin__page-section-item order-billing-method">
+                    <?php echo $block->getChildHtml('billing_method') ?>
+                </div>
+                <div id="order-shipping_method" class="admin__page-section-item order-shipping-method">
+                    <?php echo $block->getChildHtml('shipping_method') ?>
+                </div>
+            </div>
+        </section>
+
+        <?php if ($block->getChildBlock('card_validation')): ?>
+            <section id="order-card_validation" class="admin__page-section order-card-validation">
+                <?php echo $block->getChildHtml('card_validation') ?>
+            </section>
+        <?php endif; ?>
+
+        <?php echo $block->getChildHtml('gift_options') ?>
+
+        <section class="admin__page-section order-summary">
+            <div class="admin__page-section-title">
+                <span class="title"><?php /* @escapeNotVerified */
+                    echo __('Order Total') ?></span>
+            </div>
+            <div class="admin__page-section-content">
+                <fieldset class="admin__fieldset order-history" id="order-comment">
+                    <legend class="admin__legend"><span><?php /* @escapeNotVerified */
+                            echo __('Order History') ?></span></legend>
+                    <br>
+                    <?php echo $block->getChildHtml('comment') ?>
+                </fieldset>
+                <fieldset id="order-totals" class="admin__fieldset order-totals">
+                    <?php echo $block->getChildHtml('totals') ?>
+                </fieldset>
+            </div>
+        </section>
+    </div>
+
+    <?php if ($block->getCustomerId()): ?>
+        <div class="order-sidebar">
+            <div class="store-switcher order-currency">
+                <label class="admin__field-label" for="currency_switcher">
+                    <?php /* @escapeNotVerified */
+                    echo __('Order Currency:') ?>
+                </label>
+                <select id="currency_switcher"
+                        class="admin__control-select"
+                        name="order[currency]"
+                        onchange="order.setCurrencyId(this.value); order.setCurrencySymbol(this.options[this.selectedIndex].getAttribute('symbol'));">
+                    <?php foreach ($block->getAvailableCurrencies() as $_code): ?>
+                        <option value="<?php /* @escapeNotVerified */
+                        echo $_code ?>"<?php if ($_code == $block->getCurrentCurrencyCode()): ?> selected="selected"<?php endif; ?>
+                                symbol="<?php /* @escapeNotVerified */
+                                echo $block->getCurrencySymbol($_code) ?>">
+                            <?php /* @escapeNotVerified */
+                            echo $block->getCurrencyName($_code) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="customer-current-activity" id="order-sidebar">
+                <?php echo $block->getChildHtml('sidebar') ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+</div>

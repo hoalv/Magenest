@@ -1,0 +1,79 @@
+<?php
+    $result = "</br>";
+    $listAttr = $block -> getOrderAttribute();
+    $listOpp = $block -> getOrderOption();
+    $countAttr = count($listAttr);
+    $countOpp = count($listOpp);
+    for ($i = 0; $i < $countAttr; $i++) {
+        $item = $listAttr[$i];
+        $itemLabel = $item -> getFrontendLabel();
+        $itemType = $item -> getFrontendInput();
+        $itemId = $item -> getAttributeId();
+        $itemCode = $item -> getAttributeCode();
+        if($itemType=='date')
+            $tagItem = '<div class="control"><input class="datepicker" style="width: 30%;" id="input-text" type="text" name="'.$itemCode.'" id="'.$itemCode.'"/></div></br>';
+        if($itemType=='text')
+            $tagItem = '<div class="control"><input style="width: 63%;" class="input-text" type="text" name="'.$itemCode.'" id="'.$itemCode.'"/></div></br>';
+        else if($itemType=='textarea')
+            $tagItem = '<div class="control"><textarea style="width: 63%" name="'.$itemCode.'" id="'.$itemCode.'"></textarea></div></br>';
+        else if($itemType=='select')
+        {
+            $oppDetail = [];
+            for ($j = 0; $j < $countOpp; $j++) {
+                if($listOpp[$j] -> getAttributeId() == $itemId)
+                {
+                    $oppDetail = $listOpp[$j] -> getValue();
+                    $oppDetail = unserialize($oppDetail);
+                }
+            }
+            $count = count($oppDetail);
+            $tagItem = '<div><select name="'.$itemCode.'" id="'.$itemCode.'" style="width: 63%">';
+            for ($k = 0; $k < $count; $k++) {
+                $tagItem = $tagItem.'<option value="'.$oppDetail[$k]['title'].'">'.$oppDetail[$k]['title'].'</option>';
+            }
+            $tagItem = $tagItem.'</select></div></br>';
+        }
+        else if($itemType=='multiselect')
+        {
+            $oppDetail = [];
+            for ($j = 0; $j < $countOpp; $j++) {
+                if($listOpp[$j] -> getAttributeId() == $itemId)
+                {
+                    $oppDetail = $listOpp[$j] -> getValue();
+                    $oppDetail = unserialize($oppDetail);
+                }
+            }
+            $count = count($oppDetail);
+            $tagItem = '<div><select multiple name="'.$itemCode.'" id="'.$itemCode.'" style="width: 30% ; height: auto;">';
+            for ($k = 0; $k < $count; $k++) {
+                $tagItem = $tagItem.'<option value="'.$oppDetail[$k]['title'].'">'.$oppDetail[$k]['title'].'</option>';
+            }
+            $tagItem = $tagItem.'</select></div></br>';
+        }
+        $tagItem = $tagItem. '<script>
+                require([
+                "jquery",
+                "mage/calendar"
+                ], function ($) {
+                    $(".datepicker").calendar({
+                    changeYear: true,
+                    changeMonth: true,
+                    yearRange: "1970:2050",
+                    buttonText: "Select Date",
+                });
+                });
+                </script>';
+        $result = $result.'<label class="label">'.$itemLabel.'</label>'.$tagItem;
+    }
+
+
+?>
+<script>
+    window.testVar2 = '<?php echo  $result;?>';
+
+</script>
+
+
+
+
+

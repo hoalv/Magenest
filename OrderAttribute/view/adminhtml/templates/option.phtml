@@ -1,0 +1,159 @@
+<?php
+//print_r($block->getCountryCode());
+$_array = $block->getOptionArray();
+$counter = 1;
+?>
+<style>
+    th {
+        height: 40px;
+        vertical-align: middle;
+    }
+    table {
+        width: 100%;
+    }
+</style>
+<fieldset class="fieldset" id="order_rule_defaul_noti">
+    <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('Manage Options (Values of Your Attribute)') ?></span></legend>
+    <div >
+        <h4>Only use for Dropdown or Multiple Select.</h4>
+    </div>
+</fieldset>
+<fieldset class="fieldset" id="order_rule_option_fieldset">
+    <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('Manage Options (Values of Your Attribute)') ?></span></legend>
+    <table id="order_schedule_table">
+        <thead>
+        <tr>
+            <th align="center"> <?php echo __("Is Default") ?></th>
+            <th align="center" class="_required"> <?php echo __("Title") ?></th>
+        </tr>
+        </thead>
+        <br>
+        <br>
+        <tbody>
+        <tr data-order="0" class="sample-template" style="display: none;">
+            <th>
+                <input type="radio" id="order_radio"  name="option[0][checked]" >
+            </th>
+            <th>
+                <input type="text" name="option[0][title]" size="70">
+            </th>
+            <th>
+                <button type="button" name="option[0][del_btn]">Delete</button>
+            </th>
+        </tr>
+        <?php if ($_array != '') :?>
+            <?php foreach ($_array as $array) { ?>
+                <tr data-order="0" class="sample-template">
+                    <th>
+                        <input type="radio" id="order_radio"  name="option[<?php echo $counter ?>][checked]"
+                            <?php if (isset($array['checked']) && $array['checked'] == 'on') echo 'checked'; ?> >
+                    </th>
+                    <th>
+                        <input type="text" name="option[<?php echo $counter ?>][title]"
+                               value="<?php echo $array['title']; ?>" size="70">
+                    </th>
+                    <th>
+                        <button type="button" name="option[<?php echo $counter ?>][del_btn]">Delete</button>
+                    </th>
+                </tr>
+                <?php $counter++;
+            } ?>
+        <?php endif; ?>
+        </tbody>
+    </table>
+    <br>
+    <button id="add_new_option" type="button">Add Option</button><br><br>
+</fieldset>
+<script>
+    require([
+        "jquery"
+    ], function ($) {
+        "use strict";
+        var addOption = document.getElementById('add_new_option');
+        var scheduleTable = document.getElementById('order_schedule_table');
+        /**
+         * set function to delete button
+         */
+        var trElements = $(scheduleTable).find('tbody').find('tr');
+        $(trElements).each(function (index, element) {
+            var button = $(element).find('button');
+            button.click(function () {
+                $(button).closest('tr').remove();
+            });
+
+            var option = element.children[0];
+            var start_time = element.children[3];
+            var end_time = element.children[4];
+            if ($(option).find('select').val() == 1) {
+                $(start_time).find('input').prop('readonly', true);
+                $(end_time).find('input').prop('readonly', true);
+            } else {
+                $(start_time).find('input').prop('readonly', false);
+                $(end_time).find('input').prop('readonly', false);
+            }
+            $(option).change(function () {
+                if ($(this).find('select').val() == 1) {
+                    $(start_time).find('input').prop('readonly', true);
+                    $(end_time).find('input').prop('readonly', true);
+                } else {
+                    $(start_time).find('input').prop('readonly', false);
+                    $(end_time).find('input').prop('readonly', false);
+                }
+            });
+
+        });
+        /**
+         * set function to add button
+         */
+        $(addOption).click(function () {
+            var rowIds = [];
+            var template = $(scheduleTable).find('.sample-template').html();
+            var trElements = $(scheduleTable).find('tbody').find('tr');
+            $(trElements).each(function (index, element) {
+                if ($(element).data('order') != null) {
+                    rowIds.push($(element).data('order'));
+                }
+            });
+            var row_id = Math.min.apply(rowIds, rowIds);
+            var next_id = parseInt(row_id) - 1;
+            var templateRow = '<tr ' + ' data-order =' + next_id + '>' + template;
+            var valueFind = '/value=\".+\"/';
+            templateRow = templateRow.replace(valueFind, ' ');
+            var find = "[0]";
+            var replace = "[" + next_id + "]";
+            for (var i = 0; i < 5; i++) {
+                templateRow = templateRow.replace(find, replace);
+            }
+            find = '_0_';
+            replace = '_' + next_id + '_';
+            templateRow = templateRow.replace(find, replace);
+            templateRow = templateRow.replace('style="display: none;', '');
+            templateRow = templateRow + '</tr>';
+            $(scheduleTable).find('tbody').prepend(templateRow);
+            trElements = $(scheduleTable).find('tbody').find('tr');
+            $(trElements).each(function (index, element) {
+                var button = $(element).find('button');
+                button.click(function () {
+                    $(button).closest('tr').remove();
+                });
+            });
+            /**
+             * add function to option column
+             */
+            $(trElements).each(function (index, element) {
+                var option = element.children[0];
+                var start_time = element.children[3];
+                var end_time = element.children[4];
+                $(option).change(function () {
+                    if ($(this).find('select').val() == 1) {
+                        $(start_time).find('input').prop('readonly', true);
+                        $(end_time).find('input').prop('readonly', true);
+                    } else {
+                        $(start_time).find('input').prop('readonly', false);
+                        $(end_time).find('input').prop('readonly', false);
+                    }
+                });
+            });
+        });
+    });
+</script>

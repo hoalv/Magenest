@@ -1,0 +1,137 @@
+<?php /** @var $block  \Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Js */ ?>
+<?php
+$_data = $block->getCollection();
+if ($_data !== ' ') {
+    $attributeId = $_data->getAttributeId();
+//    $_data['attribute_id']
+    $frontendInput = $_data->getFrontendInput();
+    $defaultValue = $_data->getDefaultValue();
+    $option = $block->getOptionAttribute($attributeId);
+    $value =  $option->getValue();
+} else {
+    $attributeId = 0;
+    $defaultValue = '';
+    $frontendInput = 0;
+    $value = '';
+}
+?>
+<script>
+    require([
+        "jquery"
+    ], function ($) {
+        var optionElement = document.getElementById("order_rule_frontend_input");
+        var optionAdd = document.getElementById("order_rule_option_fieldset");
+        var checked = document.getElementById("order_config_is_checked");
+        var country = document.getElementById("order_config_country");
+        var fromElement1 = document.getElementById("order_rule_value_text_field");
+        var fromElement2 = document.getElementById("order_rule_value_text_area");
+        var fromElement3 = document.getElementById("order_rule_value_date");
+        var fromElement4 = document.getElementById("order_rule_is_required");
+        var fromElement5 = document.getElementById("order_rule_input_validation");
+        var fromElement6 = document.getElementById("order_rule_value_yes_no");
+        var fromElement7 = document.getElementById("order_rule_image_size");
+        var fromElement8 = document.getElementById("order_rule_validate_rules_config");
+        var attributeId = '<?php echo $attributeId; ?>';
+        var frontendInput = '<?php echo $frontendInput; ?>';
+        var defauNoti = document.getElementById("order_rule_defaul_noti");
+
+//        var select_val = $('#order_rule_frontend_input option:selected').val();
+//        $('#order_rule_frontend_input_hidden').val(select_val);
+
+        // hide all elements
+
+        $(optionAdd).hide();
+        $(country).parent().parent().hide();
+        $(fromElement1).parent().parent().hide();
+        $(fromElement2).parent().parent().hide();
+        $(fromElement3).parent().parent().hide();
+        $(fromElement4).parent().parent().hide();
+        $(fromElement5).parent().parent().hide();
+        $(fromElement6).parent().parent().hide();
+        $(fromElement7).parent().parent().hide();
+        $(fromElement8).parent().parent().hide();
+//         check option, show necessary elements
+
+        if ($(optionElement).val() == 'text') {
+            $(defauNoti).show();
+            $(fromElement1).parent().parent().show();
+            $(fromElement4).parent().parent().show();
+            $(fromElement5).parent().parent().show();
+            $(fromElement8).parent().parent().show();
+        } else if ($(optionElement).val() == 'textarea') {
+            $(defauNoti).show();
+            $(fromElement2).parent().parent().show();
+            $(fromElement4).parent().parent().show();
+        } else if ($(optionElement).val() == 'date') {
+            $(defauNoti).show();
+            $(fromElement3).parent().parent().show();
+            $(fromElement4).parent().parent().show();
+        } else if ($(optionElement).val() == 'multiselect' || $(optionElement).val() == 'select' ) {
+            $(defauNoti).hide();
+            $(optionAdd).show();
+            $(fromElement4).parent().parent().show();
+
+        } else if ($(optionElement).val() == 'boolean') {
+            $(defauNoti).show();
+            $(fromElement4).parent().parent().show();
+            $(fromElement6).parent().parent().show();
+         }
+        if ($(checked).val() == '1') {
+            $(country).parent().parent().show();
+        }
+        $(checked).change(function () {
+            $(country).parent().parent().hide();
+            if ($(this).val() == '1') {
+                $(country).parent().parent().show();
+            }
+        });
+        $(optionElement).change(function () {
+            // hide all elements
+            $(optionAdd).hide();
+            $(fromElement1).parent().parent().hide();
+            $(fromElement2).parent().parent().hide();
+            $(fromElement3).parent().parent().hide();
+            $(fromElement4).parent().parent().hide();
+            $(fromElement5).parent().parent().hide();
+            $(fromElement6).parent().parent().hide();
+            $(fromElement7).parent().parent().hide();
+            $(fromElement8).parent().parent().hide();
+            // show necessary elements
+            $(defauNoti).show();
+            if ($(this).val() == 'text') {
+                $(fromElement1).parent().parent().show();
+                $(fromElement4).parent().parent().show();
+                $(fromElement5).parent().parent().show();
+                $(fromElement8).parent().parent().show();
+            } else if ($(this).val() == 'textarea') {
+                $(fromElement2).parent().parent().show();
+                $(fromElement4).parent().parent().show();
+            } else if ($(this).val() == 'date') {
+                $(fromElement3).parent().parent().show();
+                $(fromElement4).parent().parent().show();
+            } else if ($(optionElement).val() == 'multiselect' || $(optionElement).val() == 'select' ) {
+                $(defauNoti).hide();
+                $(optionAdd).show();
+                $(fromElement4).parent().parent().show();
+            } else if ($(this).val() == 'boolean') {
+                $(fromElement4).parent().parent().show();
+                $(fromElement6).parent().parent().show();
+            }
+        });
+        //input value some element while edit attribute
+        if (attributeId != '0') {
+            document.getElementById("order_rule_attribute_code").readOnly  = true;
+//            document.getElementById("order_rule_frontend_input").disabled  = true;
+            document.getElementById("order_config_sort_order").readOnly  = true;
+            if (frontendInput == 'text') {
+                document.getElementById('order_rule_value_text_field').value = '<?php echo $defaultValue; ?>';
+            } else if (frontendInput == 'textarea') {
+                document.getElementById('order_rule_value_text_area').value = '<?php echo $defaultValue; ?>';
+            } else if (frontendInput == 'date') {
+                document.getElementById('order_rule_value_date').value = '<?php echo $defaultValue; ?>';
+            } else if (frontendInput == 'boolean') {
+                document.getElementById('order_rule_value_yes_no').value = '<?php echo $defaultValue; ?>';
+            }
+        }
+    });
+</script>

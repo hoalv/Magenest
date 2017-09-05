@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="editor"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit" name="orderattribute_attribute_edit"/>
+        </referenceContainer>
+        <referenceContainer name="left">
+            <block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tabs"
+                   name="orderattribute_attribute_edit_tabs">
+                <block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tab\Main"
+                       name="orderattribute_attribute_edit_tab_main"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">main_section</argument>
+                    <argument name="block" xsi:type="string">orderattribute_attribute_edit_tab_main</argument>
+                </action>
+                <block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tab\Option"
+                       name="orderattribute_attribute_edit_tab_option"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">option_section</argument>
+                    <argument name="block" xsi:type="string">orderattribute_attribute_edit_tab_option</argument>
+                </action>
+                <block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tab\Configuration"
+                       name="orderattribute_attribute_edit_tab_configuration"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">configuration_section</argument>
+                    <argument name="block" xsi:type="string">orderattribute_attribute_edit_tab_configuration</argument>
+                </action>
+            </block>
+        </referenceContainer>
+        <referenceContainer name="js">
+            <block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Js" template="js.phtml"/>
+        </referenceContainer>
+    </body>
+</page>
+        <!--<?xml version="1.0"?>-->
+        <!--<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">-->
+        <!--<update handle="editor"/>-->
+        <!--<body>-->
+        <!--<referenceContainer name="content">-->
+        <!--<block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit" name="orderattribute_attribute_edit"/>-->
+        <!--</referenceContainer>-->
+        <!--<referenceContainer name="left">-->
+        <!--<block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tabs" name="orderattribute_attribute_edit_tabs">-->
+        <!--<container label="Main" name="main">-->
+        <!--<block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tab\Main" name="orderattribute_attribute_edit_tab_main"/>-->
+        <!--<block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tab\Option" name="orderattribute_attribute_edit_tab_option"/>-->
+        <!--<action method="addTab">-->
+        <!--<argument name="name" xsi:type="string">orderattribute_attribute_tab_option</argument>-->
+        <!--<argument name="block" xsi:type="string">orderattribute_attribute_edit_tab_option</argument>-->
+        <!--</action>-->
+        <!--</container>-->
+        <!--<block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Tab\Configuration" as="configuration"/>-->
+        <!--</block>-->
+        <!--</referenceContainer>-->
+        <!--<referenceContainer name="js">-->
+        <!--<block class="Magenest\OrderAttribute\Block\Adminhtml\Attribute\Edit\Js" template="js.phtml"/>-->
+        <!--</referenceContainer>-->
+        <!--</body>-->
+        <!--</page>-->
+
+
+

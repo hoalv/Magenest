@@ -1,0 +1,90 @@
+<style>
+    #attribute-field{
+        margin-bottom: 25px;
+    }
+</style>
+<section class="admin__page-section order-attribute">
+    <div class="admin__page-section-title">
+        <span class="title"><?php echo __('Additional Attributes'); ?></span>
+        <!--    <div class="actions">New attribute</div>-->
+    </div>
+    <!--    <div class="admin__page-section-content ">-->
+    <!--        <strong>--><?php //echo $block->getOrderAttribute()->getFrontendLabel() ;?><!--</strong>-->
+    <!--        <input type="--><?php //echo $block->getOrderAttribute()->getFrontendInput() ?><!--">-->
+    <!--    </div>-->
+    <div class="admin__page-section-content ">
+        <?php
+        $_data = $block->getOrderAttribute();
+        foreach ($_data as $data) {
+            $typeInput = $data->getFrontendInput();
+            $attributeId = $data->getAttributeId();
+            ?>
+            <div class="admin__field" id="attribute-field">
+                <!--        <fieldset class="admin__fieldset">-->
+                <label  class="admin__field-label" for=""><span><?php /* @escapeNotVerified */
+                        echo $data->getFrontendLabel(); ?></span></label>
+                <?php
+                if ($typeInput == 'text') {
+                    ?>
+                    <input type="text" name="addition[custom][text_<?php echo $attributeId; ?>]"
+                           id="addition[custom][text_<?php echo $attributeId; ?>]"
+                           class="admin__control-text" value="123" size="50"><br>
+                    <?php
+                } else if ($typeInput == 'textarea') {
+                    ?>
+                    <textarea name="addition[custom][textarea_<?php echo $attributeId; ?>]"
+                              id="addition[custom][textarea_<?php echo $attributeId; ?>]"
+                              rows="4" cols="15"></textarea><br>
+                    <?php
+                } else if ($typeInput == 'date') {
+                    ?>
+                    <input type="text" class="datepicker" id="addition[custom][date_<?php echo $attributeId; ?>]"
+                           name="addition[custom][date_<?php echo $attributeId; ?>]"
+                           value=""><br/>
+                    <?php
+                } else if ($typeInput == 'multiselect') {
+                    ?>
+                    <select class="admin__control-multiselect" name="addition[option][multiselect_<?php echo $attributeId; ?>][]" multiple="multiple">
+                        <option id="custom[multiselect_<?php echo $attributeId; ?>]"
+                                name="custom[multiselect_<?php echo $attributeId; ?>]" value="">
+                        </option>
+                    </select><br>
+                    <?php
+                } else if ($typeInput == 'select') {
+                    ?>
+                    <select class="admin__control-select" name="addition[option][select_<?php echo $attributeId; ?>][]">
+                        <option id="custom[select_<?php echo $attributeId; ?>]"
+                                name="custom[select_<?php echo $attributeId; ?>]" value="1">op1
+                        </option>
+                        <option id="custom[select_<?php echo $attributeId; ?>]"
+                                name="custom[select_<?php echo $attributeId; ?>]" value="2">op2
+                        </option>
+                    </select><br>
+                    <?php
+                }
+                ?>
+            </div>
+            <!--            </fieldset>-->
+            <?php
+        }
+        ?>
+    </div>
+</section>
+
+<script>
+    require([
+        "jquery",
+        "mage/calendar"
+    ], function ($) {
+        $(".datepicker").calendar({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: "1970:2050",
+            buttonText: "Select Date",
+        });
+    });
+</script>
+<!--                <strong>--><?php //echo 'code: ' . $data->getAttributeCode() . '- type: ' . $data->getFrontendInput() . '<br/>'; ?><!--</strong>-->
+
+<!--                <input type="date" class="date_time"  id="addition" name="addition">-->
+

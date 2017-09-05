@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2017 Amasty (https://www.amasty.com)
+ * @package Amasty_Orderattr
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Magenest_OrderAttribute::order_attributes"
+             title="Order Attributes"
+             module="Magenest_OrderAttribute"
+             sortOrder="151801"
+             parent="Magento_Sales::sales"
+             resource="Magenest_OrderAttribute::order_attributes"/>
+
+        <add id="Magenest_OrderAttribute::attributes_list"
+             title="Manage Order Attributes"
+             module="Magenest_OrderAttribute"
+             sortOrder="10"
+             parent="Magenest_OrderAttribute::order_attributes"
+             action="orderattribute/attribute/"
+             resource="Magenest_OrderAttribute::attributes_list"/>
+
+        <!--<add id="Magenest_OrderAttribute::attributes_relation"-->
+             <!--title="Manage Order Attributes Relations"-->
+             <!--module="Magenest_OrderAttribute"-->
+             <!--sortOrder="20"-->
+             <!--parent="Magenest_OrderAttribute::order_attributes"-->
+             <!--action="orderattribute/relation/"-->
+             <!--resource="Magenest_OrderAttribute::attributes_relation"/>-->
+    </menu>
+</config>
